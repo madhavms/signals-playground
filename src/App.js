@@ -40,13 +40,10 @@ const descriptions = computed(() => {
   }, {});
 });
 
-console.log("descriptions", descriptions.value);
 
 const handleLabelChange = (event, workspaceId) => {
   let currentLabel = labels.value.find((label) => label.id === workspaceId);
-  console.log("currentLabel =", currentLabel);
   currentLabel.labelName.value = event.target.value;
-  console.log("labels.value=", labels.value);
 };
 
 function App() {
@@ -58,7 +55,7 @@ function App() {
           <div key={index}>
             <input
               type="text"
-              value={label.labelName}
+              value={label.labelName.value}
               onChange={(event) => handleLabelChange(event, label.id)}
             />
             <h1>Label: {label.labelName.value}</h1>
