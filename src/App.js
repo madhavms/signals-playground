@@ -1,6 +1,6 @@
 import "./App.css";
 import TabsBar from "./components/TabsBar";
-import { createWorkspace } from "./helpers/WorkspaceHelper";
+import { createWorkspace } from "./helpers/workspaceStore";
 
 const { tabs, handleWorkspaceSelection, selectedTab, description } =
   createWorkspace();
