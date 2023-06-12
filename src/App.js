@@ -5,21 +5,30 @@ import TabsBar from "./components/TabsBar";
 
 function createWorkspaceSignal(workspaces) {
   const workspaceSignals = signal({});
+
+  function createSignalObject(obj) {
+    const signalObj = {};
+
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+
+      if (typeof value === "object" && value !== null) {
+        signalObj[key] = createSignalObject(value);
+      } else {
+        const propSignal = signal(value);
+        signalObj[key] = propSignal;
+      }
+    });
+
+    return signal(signalObj);
+  }
+
   Object.keys(workspaces).forEach((key) => {
     const workspace = workspaces[key];
-    const workspaceSignal = signal(workspace);
-    const templateInfoSignal = signal(workspace.templateInfo);
-    const displayLabelSignal = signal(workspace.templateInfo.displayLabel);
-    const descriptionSignal = signal(workspace.templateInfo.description);
-    const isSelectedSignal = signal(workspace.templateInfo.isSelected);
-
-    templateInfoSignal.value.displayLabel = displayLabelSignal;
-    templateInfoSignal.value.description = descriptionSignal;
-    templateInfoSignal.value.isSelected = isSelectedSignal;
-
-    workspaceSignal.value.templateInfo = templateInfoSignal;
+    const workspaceSignal = createSignalObject(workspace);
     workspaceSignals.value[key] = workspaceSignal;
   });
+
   return workspaceSignals;
 }
 
