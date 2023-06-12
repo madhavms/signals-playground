@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import CloseIcon from "@material-ui/icons/Close";
-import { signal } from "@preact/signals-react";
 
 const useStyles = makeStyles((theme) => ({
   hiddenIndicator: {
@@ -66,25 +65,10 @@ function TabsBar({
   handleWorkspaceSelection,
   handleCloseWorkspace,
   handleTabRename,
+  selectedTab,
 }) {
   const mode = "light";
   const classes = useStyles({ mode });
-  const selectedTab = Object.values(tabs.value).find(
-    (tab) => tab.isSelected.value
-  )?.id;
-
-  const renamingTab = signal(null);
-
-  const handleDoubleClick = (tabId) => {
-    renamingTab.value = tabId;
-  };
-
-  const handleTabRenameConfirm = (event, tabId) => {
-    if (event.key === "Enter") {
-      handleTabRename(tabId, event.target.value);
-      renamingTab.value = null;
-    }
-  };
 
   return (
     <div className={classes.tabsContainer}>
@@ -97,45 +81,30 @@ function TabsBar({
         variant="scrollable"
         scrollButtons="auto"
       >
-        {Object.values(tabs.value).map(({ id, isSelected, labelName }) => (
+        {Object.values(tabs).map(({ id, isSelected, labelName }) => (
           <Tab
-            key={id}
+            key={id.value}
             label={
-              renamingTab === id ? (
-                <input
-                  type="text"
-                  autoFocus
-                  value={labelName.value}
-                  onChange={() => {}}
-                  onKeyDown={(event) => handleTabRenameConfirm(event, id)}
-                  onBlur={() => (renamingTab.value = null)}
-                  className={classes.labelInput}
-                />
-              ) : (
-                <div
-                  className={classes.tabLabel}
-                  onDoubleClick={() => handleDoubleClick(id)}
+              <div className={classes.tabLabel}>
+                {labelName.value}
+                <span
+                  className={classes.closeButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCloseWorkspace(id);
+                  }}
+                  size="small"
                 >
-                  {labelName.value}
-                  <span
-                    className={classes.closeButton}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCloseWorkspace(id);
-                    }}
-                    size="small"
-                  >
-                    <CloseIcon
-                      fontSize="small"
-                      className={
-                        isSelected.value
-                          ? classes.closeIconSelected
-                          : classes.closeIcon
-                      }
-                    />
-                  </span>
-                </div>
-              )
+                  <CloseIcon
+                    fontSize="small"
+                    className={
+                      isSelected.value
+                        ? classes.closeIconSelected
+                        : classes.closeIcon
+                    }
+                  />
+                </span>
+              </div>
             }
             value={id}
             className={classes.tab}
