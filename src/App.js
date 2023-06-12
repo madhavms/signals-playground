@@ -2,10 +2,9 @@ import "./App.css";
 import TabsBar from "./components/TabsBar";
 import { createWorkspace } from "./helpers/WorkspaceHelper";
 
-const { getTabs, handleWorkspaceSelection, getSelectedTab, getDescription } =
+const { tabs, handleWorkspaceSelection, selectedTab, description } =
   createWorkspace();
 
-const tabs = getTabs();
 
 function App() {
   return (
@@ -13,9 +12,9 @@ function App() {
       <TabsBar
         tabs={tabs}
         handleWorkspaceSelection={handleWorkspaceSelection}
-        selectedTab={getSelectedTab()}
+        selectedTab={selectedTab}
       />
-      <div className="description-container">{getDescription()}</div>
+      <div className="description-container">{description()}</div>
     </div>
   );
 }

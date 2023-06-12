@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
       alignItems: "center",
       justifyContent: "center",
       cursor: "pointer",
-      marginLeft: theme.spacing(1),
     },
     labelContainer: {
       display: "flex",
@@ -64,16 +63,14 @@ function TabsBar({
   tabs,
   handleWorkspaceSelection,
   handleCloseWorkspace,
-  handleTabRename,
   selectedTab,
 }) {
   const mode = "light";
   const classes = useStyles({ mode });
-
   return (
     <div className={classes.tabsContainer}>
       <Tabs
-        value={selectedTab}
+        value={selectedTab()}
         onChange={(e, newValue) => handleWorkspaceSelection(newValue)}
         indicatorColor="primary"
         textColor="primary"
@@ -81,9 +78,9 @@ function TabsBar({
         variant="scrollable"
         scrollButtons="auto"
       >
-        {Object.values(tabs).map(({ id, isSelected, labelName }) => (
+        {Object.values(tabs()).map(({ id, isSelected, labelName }) => (
           <Tab
-            key={id.value}
+            key={id}
             label={
               <div className={classes.tabLabel}>
                 {labelName.value}
@@ -106,7 +103,7 @@ function TabsBar({
                 </span>
               </div>
             }
-            value={id}
+            value={id.value}
             className={classes.tab}
           />
         ))}

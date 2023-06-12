@@ -6,7 +6,6 @@ export const createWorkspace = () => {
 
   function createSignalObject(obj) {
     const signalObj = {};
-
     Object.keys(obj).forEach((key) => {
       const value = obj[key];
       if (typeof value === "object" && value !== null) {
@@ -16,7 +15,6 @@ export const createWorkspace = () => {
         signalObj[key] = propSignal;
       }
     });
-
     return signal(signalObj);
   }
 
@@ -31,17 +29,10 @@ export const createWorkspace = () => {
     ).value;
   });
 
-  const getCurrentWorkspace = () => {
-    return currentWorkspace.value;
-  };
-
   const description = computed(() => {
-    return getCurrentWorkspace().description;
+    return currentWorkspace.value.description;
   });
 
-  const getDescription = () => {
-    return description.value;
-  };
 
   const tabs = computed(() => {
     return Object.values(workspaces.value).reduce((acc, workspace) => {
@@ -56,29 +47,27 @@ export const createWorkspace = () => {
     }, {});
   });
 
-  const getTabs = () => {
-    return tabs.value;
-  };
-
   const selectedTab = computed(() => {
-    return Object.values(tabs.value).find((tab) => tab.isSelected.value)?.id;
+    const selectedTabId = Object.values(tabs.value).find(
+      (tab) => tab.isSelected.value
+    )?.id.value;
+    return selectedTabId || null;
   });
 
-  const getSelectedTab = () => {
-    return selectedTab.value;
-  };
+  
 
   const handleWorkspaceSelection = (workspaceId) => {
     Object.keys(tabs.value).forEach((key) => {
-      tabs.value[key].isSelected.value = tabs.value[key].id === workspaceId;
+      return tabs.value[key].isSelected.value = tabs.value[key].id.value === workspaceId;
     });
   };
 
+
   return {
-    getCurrentWorkspace,
-    getDescription,
-    getTabs,
+    currentWorkspace: () => currentWorkspace.value,
+    description : () => description.value,
+    tabs: () => tabs.value,
     handleWorkspaceSelection,
-    getSelectedTab,
+    selectedTab: () => selectedTab.value,
   };
 };
