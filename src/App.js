@@ -1,6 +1,7 @@
 import "./App.css";
 import { signal, computed } from "@preact/signals-react";
 import { Workspaces } from "./Workspaces";
+import TabsBar from "./components/TabsBar";
 
 function createWorkspaceSignal(workspaces) {
   const workspaceSignals = signal({});
@@ -10,9 +11,11 @@ function createWorkspaceSignal(workspaces) {
     const templateInfoSignal = signal(workspace.templateInfo);
     const displayLabelSignal = signal(workspace.templateInfo.displayLabel);
     const descriptionSignal = signal(workspace.templateInfo.description);
+    const isSelectedSignal = signal(workspace.templateInfo.isSelected);
 
     templateInfoSignal.value.displayLabel = displayLabelSignal;
     templateInfoSignal.value.description = descriptionSignal;
+    templateInfoSignal.value.isSelected = isSelectedSignal;
 
     workspaceSignal.value.templateInfo = templateInfoSignal;
     workspaceSignals.value[key] = workspaceSignal;
@@ -22,47 +25,41 @@ function createWorkspaceSignal(workspaces) {
 
 const workspaceSignal = createWorkspaceSignal(Workspaces);
 
-const labels = computed(() => {
-  return Object.values(workspaceSignal.value).map((workspace) => {
-    return {
-      id: workspace.value.id,
-      labelName: workspace.value.templateInfo.value.displayLabel,
-    };
-  });
+const currentWorkspace = computed(() => {
+  return Object.values(workspaceSignal.value).find(
+    (workspace) => workspace.value.templateInfo.value.isSelected.value
+  );
 });
 
-const descriptions = computed(() => {
-  return Object.values(workspaceSignal.value).reduce((acc , workspace) => {
+const tabs = computed(() => {
+  return Object.values(workspaceSignal.value).reduce((acc, workspace) => {
     return {
       ...acc,
-      [workspace.value.id]: workspace.value.templateInfo.value.description
+      [workspace.value.id]: {
+        id: workspace.value.id,
+        labelName: workspace.value.templateInfo.value.displayLabel,
+        isSelected: workspace.value.templateInfo.value.isSelected,
+      },
     };
   }, {});
 });
 
-
-const handleLabelChange = (event, workspaceId) => {
-  let currentLabel = labels.value.find((label) => label.id === workspaceId);
-  currentLabel.labelName.value = event.target.value;
+const handleWorkspaceSelection = (workspaceId) => {
+  Object.keys(tabs.value).forEach((key) => {
+    tabs.value[key].isSelected.value = tabs.value[key].id === workspaceId;
+  });
 };
 
 function App() {
-  console.log("App rendered");
   return (
     <div className="App">
-      {labels.value.map((label, index) => {
-        return (
-          <div key={index}>
-            <input
-              type="text"
-              value={label.labelName.value}
-              onChange={(event) => handleLabelChange(event, label.id)}
-            />
-            <h1>Label: {label.labelName.value}</h1>
-            <h2>Description: {descriptions.value[label.id].value}</h2>
-          </div>
-        );
-      })}
+      <TabsBar
+        tabs={tabs}
+        handleWorkspaceSelection={handleWorkspaceSelection}
+      />
+      <div className="description-container">
+        {currentWorkspace.value.value.templateInfo.value.description.value}
+      </div>
     </div>
   );
 }
