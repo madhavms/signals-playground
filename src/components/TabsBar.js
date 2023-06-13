@@ -9,7 +9,7 @@ import {
   selectedTab,
   handleWorkspaceSelection,
   addWorkspace,
-  closeWorkspace
+  closeWorkspace,
 } from "../helpers/workspaceStore";
 import { signal } from "@preact/signals-react";
 
@@ -55,43 +55,44 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: (props) =>
         props.mode === "light" ? "#F5F5F5" : "#001e3c",
     },
-    closeButton: {
-      marginLeft: theme.spacing(1),
-      padding: 0,
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-    },
-    labelContainer: {
-      display: "flex",
-      alignItems: "center",
-    },
-    addButtonContainer: {
-      display: "flex",
-      justifyContent: "flex-end",
-      alignItems: "center",
-      padding: theme.spacing(1),
-      backgroundColor: "black",
-      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-    },
-    addButton: {
-      display: "flex",
-      alignItems: "center",
-      marginTop: theme.spacing(4),
-      backgroundColor: "#0059b2",
-      color: "white",
-      borderRadius: theme.spacing(1),
-      padding: theme.spacing(0.5, 1.5),
-      cursor: "pointer",
-      "&:hover": {
-        backgroundColor: "black",
-      },
-    },
-    addIcon: {
-      marginRight: theme.spacing(0.5),
+  },
+  closeButton: {
+    padding: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    marginLeft: theme.spacing(1),
+  },
+  labelContainer: {
+    display: "flex",
+    alignItems: "center",
+  },
+  addButtonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    padding: theme.spacing(0.1),
+    backgroundColor: "#F5F5F5",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+  },
+  addButton: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+    backgroundColor: "#0059b2",
+    color: "white",
+    borderRadius: theme.spacing(0.5),
+    padding: theme.spacing(0.20, 1),
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: "#0069d9",
     },
   },
+  addIcon: {
+    marginRight: theme.spacing(0.25),
+  },  
 }));
 
 function TabsBar() {
@@ -102,8 +103,8 @@ function TabsBar() {
     const newWorkspace = {
       id: `f342336a-3594-4cd1-9b0f-152888146787${count}`,
       displayLabel: `New Workspace ${count}`,
-      description: `Newest Workspace ${count}`,
-      isSelected: false, 
+      description: `This is New Workspace ${count}`,
+      isSelected: false,
     };
     count.value++;
     addWorkspace(newWorkspace);
